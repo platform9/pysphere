@@ -3,6 +3,8 @@
 '''SOAP message serialization.
 '''
 
+from builtins import str
+from builtins import object
 from pysphere.ZSI import _get_idstr, ZSI_SCHEMA_URI
 from pysphere.ZSI import _backtrace
 from pysphere.ZSI.wstools.Utility import MessageInterface, ElementProxy
@@ -19,7 +21,7 @@ _reserved_ns = {
         'xsi': SCHEMA.BASE + '-instance',
 }
 
-class SoapWriter:
+class SoapWriter(object):
     '''SOAP output formatter.
        Instance Data:
            memo -- memory for id/href
@@ -116,7 +118,7 @@ class SoapWriter:
         if self.envelope:
             soap_env = _reserved_ns['soapenv']
             self.dom.createDocument(soap_env, 'Envelope')
-            for prefix, nsuri in _reserved_ns.iteritems():
+            for prefix, nsuri in _reserved_ns.items():
                 self.dom.setNamespaceAttribute(prefix, nsuri)
             self.writeNSdict(self.nsdict)
             if self.encodingStyle:
@@ -151,7 +153,7 @@ class SoapWriter:
         '''Write a namespace dictionary, taking care to not clobber the
         standard (or reserved by us) prefixes.
         '''
-        for k,v in nsdict.iteritems():
+        for k,v in nsdict.items():
             if (k,v) in _standard_ns: continue
             rv = _reserved_ns.get(k)
             if rv:

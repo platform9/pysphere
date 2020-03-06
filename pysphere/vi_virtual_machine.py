@@ -1,3 +1,4 @@
+from __future__ import division
 #--
 # Copyright (c) 2012, Sebastian Tello
 # All rights reserved.
@@ -27,6 +28,12 @@
 #
 #--
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from past.builtins import basestring
+from past.utils import old_div
+from builtins import object
 import sys
 import time
 import os
@@ -108,7 +115,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def power_off(self, sync_run=True):
@@ -134,7 +141,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def reset(self, sync_run=True):
@@ -160,7 +167,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def suspend(self, sync_run=True):
@@ -183,7 +190,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def get_status(self, basic_status=False):
@@ -305,7 +312,7 @@ class VIVirtualMachine(VIManagedEntity):
                     request.set_element_answerChoice(choice)
                     self._vm._server._proxy.AnswerVM(request)
                     self._answered = True
-                except (VI.ZSI.FaultException), e:
+                except (VI.ZSI.FaultException) as e:
                     raise VIApiException(e)            
 
         self.__update_properties()
@@ -366,7 +373,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             self._server._proxy.RebootGuest(request)
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
 
@@ -382,7 +389,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             self._server._proxy.ShutdownGuest(request)
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def standby_guest(self):
@@ -397,7 +404,7 @@ class VIVirtualMachine(VIManagedEntity):
             
             self._server._proxy.StandbyGuest(request)
             
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     #--------------#
@@ -539,7 +546,7 @@ class VIVirtualMachine(VIManagedEntity):
                 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     #-------------#
@@ -613,7 +620,7 @@ class VIVirtualMachine(VIManagedEntity):
                 return
 
             return vi_task
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
         
     def relocate(self, sync_run=True, priority='default', datastore=None, 
@@ -682,7 +689,7 @@ class VIVirtualMachine(VIManagedEntity):
                 spec.set_element_transform(transform)
             if disks and isinstance(disks, dict):
                 disk_spec = []
-                for k, disk_ds in disks.iteritems():
+                for k, disk_ds in disks.items():
                     if not VIMor.is_mor(disk_ds):
                         disk_ds = VIMor(disk_ds, MORTypes.Datastore)
                     disk = spec.new_disk()
@@ -704,7 +711,7 @@ class VIVirtualMachine(VIManagedEntity):
                                       FaultTypes.TASK_ERROR)
                 return
             return vi_task
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     #----------------------#
@@ -756,7 +763,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def revert_to_named_snapshot(self, name, sync_run=True, host=None):
@@ -799,7 +806,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def revert_to_path(self, path, index=0, sync_run=True, host=None):
@@ -843,7 +850,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def create_snapshot(self, name, sync_run=True, description=None,
@@ -891,7 +898,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def delete_current_snapshot(self, remove_children=False, sync_run=True):
@@ -985,7 +992,7 @@ class VIVirtualMachine(VIManagedEntity):
 
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def get_tools_status(self):
@@ -1074,7 +1081,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_createParentDirectories(create_parents)
             
             self._server._proxy.MakeDirectoryInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
     
     def move_directory(self, src_path, dst_path):
@@ -1104,7 +1111,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_dstDirectoryPath(dst_path)
             
             self._server._proxy.MoveDirectoryInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def delete_directory(self, path, recursive):
@@ -1134,7 +1141,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_recursive(recursive)
             
             self._server._proxy.DeleteDirectoryInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
         
     def list_files(self, path, match_pattern=None):
@@ -1181,7 +1188,7 @@ class VIVirtualMachine(VIManagedEntity):
                                 'size':f.Size,
                                 'type':f.Type})
                 return ret, finfo.Remaining
-            except (VI.ZSI.FaultException), e:
+            except (VI.ZSI.FaultException) as e:
                 raise VIApiException(e)
         
         file_set, remaining = ListFilesInGuest(path, match_pattern, None, None)
@@ -1209,7 +1216,7 @@ class VIVirtualMachine(VIManagedEntity):
             raise VIException("Local file already exists",
                               FaultTypes.PARAMETER_ERROR)
         
-        from urlparse import urlparse
+        from urllib.parse import urlparse
         
         try:
             request = VI.InitiateFileTransferFromGuestRequestMsg()
@@ -1228,9 +1235,9 @@ class VIVirtualMachine(VIManagedEntity):
             url = url.replace("*", urlparse(self._server._proxy.binding.url
                                                                      ).hostname)
             if sys.version_info >= (2, 6):
-                import urllib2
-                req = urllib2.Request(url)
-                r = urllib2.urlopen(req)
+                import urllib.request, urllib.error, urllib.parse
+                req = urllib.request.Request(url)
+                r = urllib.request.urlopen(req)
                 
                 CHUNK = 16 * 1024
                 fd = open(local_path, "wb")
@@ -1240,12 +1247,12 @@ class VIVirtualMachine(VIManagedEntity):
                     fd.write(chunk)
                 fd.close()
             else:
-                import urllib
+                import urllib.request, urllib.parse, urllib.error
                 #I was getting a SSL Protocol error executing this on
                 #python 2.6, but not with 2.5
-                urllib.urlretrieve(url, local_path)
+                urllib.request.urlretrieve(url, local_path)
             
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
     
     def send_file(self, local_path, guest_path, overwrite=False):
@@ -1264,8 +1271,8 @@ class VIVirtualMachine(VIManagedEntity):
         if not self._auth_obj:
             raise VIException("You must call first login_in_guest",
                               FaultTypes.INVALID_OPERATION)
-        import urllib2
-        from urlparse import urlparse
+        import urllib.request, urllib.error, urllib.parse
+        from urllib.parse import urlparse
 
         if not os.path.isfile(local_path):
             raise VIException("local_path is not a file or does not exists.",
@@ -1293,12 +1300,12 @@ class VIVirtualMachine(VIManagedEntity):
 
             url = url.replace("*", urlparse(self._server._proxy.binding.url
                                                                      ).hostname)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
-        request = urllib2.Request(url, data=content)
+        request = urllib.request.Request(url, data=content)
         request.get_method = lambda: 'PUT'
-        resp = urllib2.urlopen(request)
+        resp = urllib.request.urlopen(request)
         if not resp.code == 200:
             raise VIException("File could not be send",
                               FaultTypes.TASK_ERROR)
@@ -1333,7 +1340,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_dstFilePath(dst_path)
             request.set_element_overwrite(overwrite)
             self._server._proxy.MoveFileInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
     
     def delete_file(self, path):
@@ -1358,7 +1365,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_auth(self._auth_obj)
             request.set_element_filePath(path)
             self._server._proxy.DeleteFileInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     #---------------------------#
@@ -1410,7 +1417,7 @@ class VIVirtualMachine(VIManagedEntity):
                             'start_time':proc.StartTime,
                            })
             return ret
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def get_environment_variables(self):
@@ -1437,7 +1444,7 @@ class VIVirtualMachine(VIManagedEntity):
             envvars = self._server._proxy.ReadEnvironmentVariableInGuest(request
                                                                     )._returnval
             return dict([v.split("=", 1) for v in envvars])
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def start_process(self, program_path, args=None, env=None, cwd=None):
@@ -1477,7 +1484,7 @@ class VIVirtualMachine(VIManagedEntity):
             spec = request.new_spec()
             spec.set_element_programPath(program_path)
             if env: spec.set_element_envVariables(["%s=%s" % (k,v) 
-                                                  for k,v in env.iteritems()])
+                                                  for k,v in env.items()])
             if cwd: spec.set_element_workingDirectory(cwd)
             spec.set_element_arguments("")
             if args:
@@ -1487,7 +1494,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_spec(spec)
             
             return self._server._proxy.StartProgramInGuest(request)._returnval
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def terminate_process(self, pid):
@@ -1512,7 +1519,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_auth(self._auth_obj)
             request.set_element_pid(pid)
             self._server._proxy.TerminateProcessInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     #-------------------#
@@ -1588,7 +1595,7 @@ class VIVirtualMachine(VIManagedEntity):
     
             spec = request.new_spec()
             extra_config = []
-            for k,v in settings.iteritems():
+            for k,v in settings.items():
                 ec = spec.new_extraConfig()
                 ec.set_element_key(str(k))
                 ec.set_element_value(str(v))
@@ -1606,7 +1613,7 @@ class VIVirtualMachine(VIManagedEntity):
                                       FaultTypes.TASK_ERROR)
                 return
             return vi_task
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     #---------------------#
@@ -1673,7 +1680,7 @@ class VIVirtualMachine(VIManagedEntity):
                                                                      ._returnval
             self._mor_vm_task_collector = ret
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def __delete_snapshot(self, mor, remove_children, sync_run):
@@ -1701,7 +1708,7 @@ class VIVirtualMachine(VIManagedEntity):
                 return
             return vi_task
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def __validate_authentication(self, auth_obj):
@@ -1718,7 +1725,7 @@ class VIVirtualMachine(VIManagedEntity):
             request.set_element_vm(vm)
             request.set_element_auth(auth_obj)
             self._server._proxy.ValidateCredentialsInGuest(request)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
     
     def __update_properties(self):
@@ -1776,7 +1783,7 @@ class VIVirtualMachine(VIManagedEntity):
                                    'device': dev,
                                    'files': files,
                                    'capacity': dev['capacityInKB'],
-                                   'committed': committed/1024,
+                                   'committed': old_div(committed,1024),
                                    'descriptor': store,
                                    'label': dev['label'],
                                    })
@@ -1794,7 +1801,7 @@ class VIVirtualMachine(VIManagedEntity):
         
         try:
             self.properties = VIProperty(self._server, self._mor)
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)      
         
         p = {}
@@ -1869,7 +1876,7 @@ class VIVirtualMachine(VIManagedEntity):
             self._resource_pool = self.properties.resourcePool._obj
             
 
-class VMPowerState:
+class VMPowerState(object):
     POWERED_ON              = 'POWERED ON'
     POWERED_OFF             = 'POWERED OFF'
     SUSPENDED               = 'SUSPENDED'
@@ -1881,7 +1888,7 @@ class VMPowerState:
     REVERTING_TO_SNAPSHOT   = 'REVERTING TO SNAPSHOT'
     UNKNOWN                 = 'UNKNOWN'
 
-class ToolsStatus:
+class ToolsStatus(object):
     #VMware Tools has never been installed or has not run in the virtual machine
     NOT_INSTALLED   = 'NOT INSTALLED'
 

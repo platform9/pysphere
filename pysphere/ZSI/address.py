@@ -3,7 +3,10 @@
 # See Copyright for copyright notice!
 ###########################################################################
 
-import time, urlparse, socket
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+import time, urllib.parse, socket
 from pysphere.ZSI import EvaluateException, WSActionException
 from pysphere.ZSI.schema import GED, GTD, _has_type_definition
 from pysphere.ZSI.wstools.Namespaces import WSA_LIST
@@ -66,8 +69,8 @@ class Address(object):
         if pyobj is None: return
         value = pyobj._Address
         if value != self._addressTo:
-            scheme,netloc,path,query,fragment = urlparse.urlsplit(value)
-            schemeF,netlocF,pathF,queryF,fragmentF = urlparse.urlsplit(self._addressTo)
+            scheme,netloc,path,query,fragment = urllib.parse.urlsplit(value)
+            schemeF,netlocF,pathF,queryF,fragmentF = urllib.parse.urlsplit(self._addressTo)
             if scheme==schemeF and path==pathF and query==queryF and fragment==fragmentF:
                 netloc = netloc.split(':') + ['80']
                 netlocF = netlocF.split(':') + ['80']
@@ -108,7 +111,7 @@ class Address(object):
         '''
         typecodes = []
         try:
-            for nsuri,elements in kw.iteritems():
+            for nsuri,elements in kw.items():
                 for el in elements:
                     typecode = GED(nsuri, el)
                     if typecode is None:

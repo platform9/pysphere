@@ -9,6 +9,8 @@
 
 # $Id$
 
+from builtins import str
+from builtins import object
 import re
 
 from pysphere.ZSI.generate import WsdlGeneratorError
@@ -34,7 +36,7 @@ def GetModuleBaseNameFromWSDL(wsdl):
 
 namespace_name = lambda cls, ns: 'ns%s' % len(cls.alias_list)
 
-class NamespaceAliasDict:
+class NamespaceAliasDict(object):
     """a lookup table to store relevant namespaces and their aliases"""
     alias_dict = {}
     alias_list = []
@@ -77,7 +79,7 @@ class NamespaceAliasDict:
     getNSList = classmethod(getNSList)
 
 
-class StringWriter:
+class StringWriter(object):
     """generator util"""
     def __init__(self, val=None):
         self.data = []
@@ -111,7 +113,7 @@ class StringWriter:
 
 # ---- generated code utils
 
-class MessageContainer:
+class MessageContainer(object):
     """generator util - used by address.py"""
     pass
 
@@ -126,7 +128,7 @@ def GetPartsSubNames(args, wsdl):
     toReturn = []
     for arg in args:
         argSubnames = []
-        for l in wsm.usedNamespaces.itervalues():
+        for l in wsm.usedNamespaces.values():
             for schema in l:
                 sd = SchemaDescription(do_extended=do_extended)
                 sd.fromSchema(schema)

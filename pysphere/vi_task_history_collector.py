@@ -27,17 +27,18 @@
 #
 #--
 
+from builtins import object
 from pysphere import VIProperty, VITask, VIMor
 from pysphere.resources import VimService_services as VI
 from pysphere import VIException, VIApiException, FaultTypes
 from pysphere.vi_history_collector import VIHistoryCollector
 
-class Recursion:
+class Recursion(object):
     ALL      = "all"
     CHILDREN = "children"
     SELF     = "self"
     
-class States:
+class States(object):
     ERROR   = "error"
     QUEUED  = "queued"
     RUNNING = "running"
@@ -102,7 +103,7 @@ class VITaskHistoryCollector(VIHistoryCollector):
             request.set_element_filter(_filter)
             resp = server._proxy.CreateCollectorForTasks(request)._returnval
         
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
         
         self._mor = resp
@@ -170,7 +171,7 @@ class VITaskHistoryCollector(VIHistoryCollector):
             for task in resp:
                 ret.append(VITask(task.Task, self._server))
         
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
         
         return ret

@@ -3,6 +3,8 @@
 '''Faults.
 '''
 
+from builtins import str
+from builtins import object
 from pysphere.ZSI import _get_idstr, _seqtypes, SoapWriter, ZSIException
 
 from pysphere.ZSI.TCcompound import Struct
@@ -14,13 +16,13 @@ from pysphere.ZSI.TC import ElementDeclaration
 import traceback
 
 
-class Detail:
+class Detail(object):
     def __init__(self, _any=None):
         self.any = _any
 
 Detail.typecode = Struct(Detail, [AnyElement(aname='any',minOccurs=0, maxOccurs="unbounded",processContents="lax")], pname='detail', minOccurs=0)
 
-class FaultType:
+class FaultType(object):
     def __init__(self, faultcode=None, faultstring=None, faultactor=None, detail=None):
         self.faultcode = faultcode
         self.faultstring= faultstring
@@ -40,7 +42,7 @@ FaultType.typecode = \
         hasextras=0,
     )
 
-class ZSIHeaderDetail:
+class ZSIHeaderDetail(object):
     def __init__(self, detail):
         self.any = detail
 
@@ -64,7 +66,7 @@ class ZSIFaultDetailTypeCode(ElementDeclaration, Struct):
             pname=(ZSI_SCHEMA_URI, 'FaultDetail'), **kw
         )
 
-class ZSIFaultDetail:
+class ZSIFaultDetail(object):
     def __init__(self, string=None, trace=None):
         self.string = string
         self.trace = trace
@@ -94,7 +96,7 @@ class URIFaultDetailTypeCode(ElementDeclaration, Struct):
             pname=(ZSI_SCHEMA_URI, 'URIFaultDetail'), **kw
         )
 
-class URIFaultDetail:
+class URIFaultDetail(object):
     def __init__(self, uri=None, localname=None):
         self.URI = uri
         self.localname = localname
@@ -114,7 +116,7 @@ class ActorFaultDetailTypeCode(ElementDeclaration, Struct):
             pname=(ZSI_SCHEMA_URI, 'ActorFaultDetail'), **kw
         )
 
-class ActorFaultDetail:
+class ActorFaultDetail(object):
     def __init__(self, uri=None):
         self.URI = uri
 ActorFaultDetail.typecode = ActorFaultDetailTypeCode()

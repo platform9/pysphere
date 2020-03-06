@@ -27,6 +27,7 @@
 #
 #--
 
+from builtins import object
 from pysphere.resources import VimService_services as VI
 from pysphere import VIException, FaultTypes
 

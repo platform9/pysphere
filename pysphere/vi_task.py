@@ -27,13 +27,15 @@
 #
 #--
 
+from builtins import range
+from builtins import object
 import time
 
 from pysphere import VIException, FaultTypes, VIApiException
 from pysphere.vi_property import VIProperty
 from pysphere.resources import VimService_services as VI
 
-class VITask:
+class VITask(object):
 
     STATE_ERROR   =   'error'
     STATE_QUEUED  =   'queued'
@@ -107,7 +109,7 @@ class VITask:
             
             self._server._proxy.CancelTask(request)
             
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
         
     def __poll_task_info(self, retries=3, interval=2):
@@ -115,7 +117,7 @@ class VITask:
             try:
                 self.info = VIProperty(self._server, self._mor).info
                 return True
-            except Exception, e:
+            except Exception as e:
                 if i == retries -1:
                     raise e
             time.sleep(interval)

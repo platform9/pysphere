@@ -3,6 +3,7 @@
 # See LBNLCopyright for copyright notice!
 ###########################################################################
 
+from builtins import object
 import pysphere.ZSI as ZSI
 from pysphere.ZSI import TC, TCcompound
 from pysphere.ZSI.TC import TypeCode
@@ -15,7 +16,7 @@ from pysphere.ZSI.wstools.Namespaces import SOAP, SCHEMA
 ###########################################################################
 
 class NamespaceException(Exception): pass
-class BaseTypeInterpreter:
+class BaseTypeInterpreter(object):
     """Example mapping of xsd/soapenc types to zsi python types.
     Checks against all available classes in ZSI.TC.  Used in
     wsdl2python, wsdlInterpreter, and ServiceProxy.

@@ -13,6 +13,7 @@
 	Radovan Garabik <garabik@melkor.dnp.fmph.uniba.sk>
 """
 
+from builtins import object
 ident = "$Id$"
 
 import socket, select, errno
@@ -20,7 +21,7 @@ import socket, select, errno
 WSAEINVAL = getattr(errno, 'WSAEINVAL', 10022)
 
 
-class TimeoutSocket:
+class TimeoutSocket(object):
     """A socket imposter that supports timeout limits."""
 
     def __init__(self, timeout=20, sock=None):
@@ -46,7 +47,7 @@ class TimeoutSocket:
             sock.connect(*addr)
             sock.setblocking(timeout != 0)
             return 1
-        except socket.error,why:
+        except socket.error as why:
             if not timeout:
                 raise
             sock.setblocking(1)
@@ -63,7 +64,7 @@ class TimeoutSocket:
                 try:
                     sock.connect(*addr)
                     return 1
-                except socket.error,why:
+                except socket.error as why:
                     if len(why.args) == 1:
                         code = 0
                     else:

@@ -36,6 +36,12 @@ Authors:
 $Date$ by $Author$
 '''
 
+from past.builtins import cmp
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 _copyright = '''Copyright 2001, Zolera Systems Inc.  All Rights Reserved.
 Copyright 2001, MIT. All Rights Reserved.
 
@@ -50,16 +56,16 @@ or
 from xml.dom import Node
 
 try:
-    import cStringIO
+    import io
     StringIO = cStringIO
 except ImportError:
-    import StringIO
+    import io
 
-class XMLNS:
+class XMLNS(object):
     BASE = "http://www.w3.org/2000/xmlns/"
     XML = "http://www.w3.org/XML/1998/namespace"
 
-_attrs = lambda E: (E.attributes and E.attributes.values()) or []
+_attrs = lambda E: (E.attributes and list(E.attributes.values())) or []
 _children = lambda E: E.childNodes or []
 _IN_XML_NS = lambda n: n.name.startswith("xmlns")
 _inclusive = lambda n: n.unsuppressedPrefixes == None
@@ -67,7 +73,7 @@ _inclusive = lambda n: n.unsuppressedPrefixes == None
 
 # Does a document/PI has lesser/greater document order than the
 # first element?
-_LesserElement, _Element, _GreaterElement = range(3)
+_LesserElement, _Element, _GreaterElement = list(range(3))
 
 def _sorter(n1,n2):
     '''_sorter(n1,n2) -> int
@@ -140,7 +146,7 @@ def _inclusiveNamespacePrefixes(node, context, unsuppressedPrefixes):
 _in_subset = lambda subset, node: subset is None or node in subset # rich's tweak
 
 
-class _implementation:
+class _implementation(object):
     '''Implementation class for C14N. This accompanies a node during it's
     processing and includes the parameters and processing state.'''
 
@@ -353,7 +359,7 @@ class _implementation:
 
             # Create list of NS attributes to render.
             ns_to_render = []
-            for n,v in ns_local.iteritems():
+            for n,v in ns_local.items():
 
                 # If default namespace is XMLNS.BASE or empty,
                 # and if an ancestor was the same
@@ -371,7 +377,7 @@ class _implementation:
 
                 # If not previously rendered
                 # and it's inclusive  or utilized
-                if (n,v) not in list(ns_rendered.iteritems()):
+                if (n,v) not in list(ns_rendered.items()):
                     if inclusive or _utilized(n, node, other_attrs, self.unsuppressedPrefixes):
                         ns_to_render.append((n, v))
                     elif not inclusive:
@@ -387,9 +393,9 @@ class _implementation:
             # Else, add all local and ancestor xml attributes
             # Sort and render the attributes.
             if not inclusive or _in_subset(self.subset,node.parentNode):  #0426
-                other_attrs.extend(xml_attrs_local.itervalues())
+                other_attrs.extend(iter(xml_attrs_local.values()))
             else:
-                other_attrs.extend(xml_attrs.itervalues())
+                other_attrs.extend(iter(xml_attrs.values()))
             other_attrs.sort(_sorter)
             for a in other_attrs:
                 self._do_attr(a.nodeName, a.value)
@@ -423,6 +429,6 @@ def Canonicalize(node, output=None, **kw):
     if output:
         _implementation(*(node, output.write), **kw)
     else:
-        s = StringIO.StringIO()
+        s = io.StringIO()
         _implementation(*(node, s.write), **kw)
         return s.getvalue()

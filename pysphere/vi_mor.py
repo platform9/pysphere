@@ -27,6 +27,7 @@
 #
 #--
 
+from builtins import object
 from pysphere.resources.VimService_services_types import ns0
 
 class VIMor(str):

@@ -3,6 +3,8 @@
 '''Simple CGI dispatching.
 '''
 
+from builtins import str
+from builtins import object
 from pysphere.ZSI import TC
 import base64, os
 
@@ -15,7 +17,7 @@ _auth_tc = TC.Struct(None,
                         [ TC.String('Name'), TC.String('Password') ],
                         extras=1)
 
-class AUTH:
+class AUTH(object):
     '''Constants for authentication mechanisms.
     '''
     none = 0
@@ -23,7 +25,7 @@ class AUTH:
     zsibasic = 2
     httpdigest = 4
 
-class ClientBinding:
+class ClientBinding(object):
     '''Information about the client that is connected to us.
     '''
 

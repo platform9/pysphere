@@ -3,6 +3,11 @@
 '''General typecodes.
 '''
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 from inspect import isclass
 
 from pysphere.ZSI import _children, _child_elements, _floattypes, \
@@ -18,12 +23,12 @@ from pysphere.ZSI.wstools.logging import getLogger as _GetLogger
 import re, types, time, copy
 
 from base64 import decodestring as b64decode, encodestring as b64encode
-from urllib import unquote as urldecode, quote as urlencode
+from urllib.parse import unquote as urldecode, quote as urlencode
 from binascii import unhexlify as hexdecode, hexlify as hexencode
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 
 _is_xsd_or_soap_ns = lambda ns: ns in [
@@ -46,7 +51,7 @@ Nilled = None
 UNBOUNDED = 'unbounded'
 
 
-class TypeCode:
+class TypeCode(object):
     '''The parent class for all parseable SOAP types.
     Class data:
         typechecks -- do init-time type checking if non-zero
@@ -291,7 +296,7 @@ class TypeCode:
             return
 
         attributes = {}
-        for attr,what in self.attribute_typecode_dict.iteritems():
+        for attr,what in self.attribute_typecode_dict.items():
             namespaceURI,localName = None,attr
             if isinstance(attr, _seqtypes):
                 namespaceURI,localName = attr
@@ -322,7 +327,7 @@ class TypeCode:
             raise TypeError('pyobj.%s must be a dictionary of names and values'
                             % self.attrs_aname)
 
-        for attr, value in getattr(pyobj, self.attrs_aname).iteritems():
+        for attr, value in getattr(pyobj, self.attrs_aname).items():
 
             namespaceURI,localName = None, attr
             if isinstance(attr, _seqtypes):
@@ -601,7 +606,7 @@ class Any(TypeCode):
             else:
                 serializer = Any.serialmap.get(tc)
             if not serializer:
-                tc = (types.ClassType, pyobj.__class__.__name__)
+                tc = (type, pyobj.__class__.__name__)
                 serializer = Any.serialmap.get(tc)
         else:
             serializer = Any.serialmap.get(tc)
@@ -645,8 +650,8 @@ class Any(TypeCode):
             el = elt.createAppendElement(ns, n)
             parentNspname = self.nspname # temporarily clear nspname for dict elements
             self.nspname = None
-            for o,m in pyobj.iteritems():
-                if not isinstance(o, (str, unicode)):
+            for o,m in pyobj.items():
+                if not isinstance(o, (str, str)):
                     raise Exception("Dictionary implementation requires keys to"
                                     " be of type string (or unicode)." % pyobj)
                 kw['name'] = o
@@ -664,7 +669,7 @@ class Any(TypeCode):
             else:
                 serializer = Any.serialmap.get(tc)
             if not serializer:
-                tc = (types.ClassType, pyobj.__class__.__name__)
+                tc = (type, pyobj.__class__.__name__)
                 serializer = Any.serialmap.get(tc)
         else:
             serializer = Any.serialmap.get(tc)
@@ -706,7 +711,7 @@ class String(SimpleType):
     '''
     empty_content = ''
     parselist = [ (None,'string') ]
-    seriallist = [ str, unicode ]
+    seriallist = [ str, str ]
     type = (SCHEMA.XSD3, 'string')
     logger = _GetLogger('ZSI.TC.String')
 
@@ -726,7 +731,7 @@ class String(SimpleType):
         return text.encode(UNICODE_ENCODING)
 
     def get_formatted_content(self, pyobj):
-        if isinstance(pyobj, unicode):
+        if isinstance(pyobj, str):
             return pyobj.encode(UNICODE_ENCODING)
         return str(pyobj)
 
@@ -937,13 +942,13 @@ class Integer(SimpleType):
     ranges = {
         'unsignedByte':         (0, 255),
         'unsignedShort':        (0, 65535),
-        'unsignedInt':          (0, 4294967295L),
-        'unsignedLong':         (0, 18446744073709551615L),
+        'unsignedInt':          (0, 4294967295),
+        'unsignedLong':         (0, 18446744073709551615),
 
         'byte':                 (-128, 127),
         'short':                (-32768, 32767),
-        'int':                  (-2147483648L, 2147483647),
-        'long':                 (-9223372036854775808L, 9223372036854775807L),
+        'int':                  (-2147483648, 2147483647),
+        'long':                 (-9223372036854775808, 9223372036854775807),
 
         'negativeInteger':      (_ignored, -1),
         'nonPositiveInteger':   (_ignored, 0),
@@ -952,8 +957,8 @@ class Integer(SimpleType):
 
         'integer':              (_ignored, _ignored)
     }
-    parselist = [ (None,k) for k in ranges.iterkeys() ]
-    seriallist = [ int, long ]
+    parselist = [ (None,k) for k in ranges.keys() ]
+    seriallist = [ int, int ]
     logger = _GetLogger('ZSI.TC.Integer')
 
     def __init__(self, pname=None, format='%d', **kw):
@@ -970,7 +975,7 @@ class Integer(SimpleType):
                 v = int(text)
             except:
                 try:
-                    v = long(text)
+                    v = int(text)
                 except:
                     raise EvaluateException('Unparseable integer',
                         ps.Backtrace(elt))
@@ -1124,7 +1129,7 @@ class Decimal(SimpleType):
         v = self.simple_value(elt, ps)
         try:
             fp = self.text_to_data(v, elt, ps)
-        except EvaluateException, ex:
+        except EvaluateException as ex:
             ex.args.append(ps.Backtrace(elt))
             raise ex
 
@@ -1185,7 +1190,7 @@ class Boolean(SimpleType):
             v = int(v)
         except:
             try:
-                v = long(v)
+                v = int(v)
             except:
                 raise EvaluateException('Unparseable boolean',
                         ps.Backtrace(elt))
@@ -1304,7 +1309,7 @@ class XML(TypeCode):
         while parent.nodeType == _Node.ELEMENT_NODE:
             for attr in [a for a in parent.attributes 
                         if a.name.startswith('xmlns:') 
-                        and a.name not in child.attributes.keys()]:
+                        and a.name not in list(child.attributes.keys())]:
                 child.setAttributeNode(attr.cloneNode(1))
 
             parent = parent.parentNode
@@ -1426,7 +1431,7 @@ class AnyElement(AnyType):
             tc = pyobj.__class__
             what = Any.serialmap.get(tc)
             if not what:
-                tc = (types.ClassType, pyobj.__class__.__name__)
+                tc = (type, pyobj.__class__.__name__)
                 what = Any.serialmap.get(tc)
 
         self.logger.debug('processContents: %s', self.processContents)
@@ -1455,7 +1460,7 @@ class AnyElement(AnyType):
             pyobj = what.parse(elt, ps)
             try:
                 pyobj.typecode = what
-            except AttributeError, ex:
+            except AttributeError as ex:
                 # Assume this means builtin type.
                 pyobj = WrapImmutable(pyobj, what)
             return pyobj
@@ -1472,7 +1477,7 @@ class AnyElement(AnyType):
             pyobj = what.parse(elt, ps)
             try:
                 pyobj.typecode = what
-            except AttributeError, ex:
+            except AttributeError as ex:
                 # Assume this means builtin type.
                 pyobj = WrapImmutable(pyobj, what)
 
@@ -1488,7 +1493,7 @@ class AnyElement(AnyType):
 
         try:
             pyobj = what.parse(elt, ps)
-        except EvaluateException, ex:
+        except EvaluateException as ex:
             self.logger.debug("error parsing:  %s" %str(ex))
 
             if len(_children(elt)) != 0:
@@ -1594,7 +1599,7 @@ class Union(SimpleType):
             self.logger.debug("Trying member %s", str(typecode.type))
             try:
                 pyobj = typecode.text_to_data(text, elt, ps)
-            except Exception, ex:
+            except Exception as ex:
                 self.logger.debug("Fail to parse with %s: %s", typecode, ex)
                 continue
 
@@ -1749,7 +1754,7 @@ def RegisterType(C, clobber=0, *args, **keywords):
         if isinstance(t, type):
             key = t
         elif isinstance(t, _stringtypes):
-            key = (types.ClassType, t)
+            key = (type, t)
         else:
             raise TypeError(str(t) + ' is not a class name')
         prev = Any.serialmap.get(key)
@@ -1833,4 +1838,4 @@ _get_type_definition, _get_global_element_declaration, Wrap  = GTD, GED, WrapImm
 
 f = lambda x: isclass(x) and issubclass(x, TypeCode) and getattr(x, 'type', None)
 
-TYPES = [o for o in globals().values() if f(o)]
+TYPES = [o for o in list(globals().values()) if f(o)]

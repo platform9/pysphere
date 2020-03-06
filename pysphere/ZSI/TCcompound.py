@@ -3,6 +3,9 @@
 '''Compound typecodes.
 '''
 
+from builtins import str
+from builtins import range
+from builtins import object
 from pysphere.ZSI import _children, _child_elements, \
     _inttypes, _stringtypes, _seqtypes, _find_arraytype, _find_href, \
     _find_type, _get_idstr, EvaluateException
@@ -90,7 +93,7 @@ class ComplexType(TypeCode):
     elements.
     '''
     logger = _GetLogger('ZSI.TCcompound.ComplexType')
-    class _DictHolder: pass
+    class _DictHolder(object): pass
 
     def __init__(self, pyclass, ofwhat, pname=None, inorder=False, inline=False,
     mutable=True, mixed=False, mixed_aname='_text', **kw):
@@ -159,7 +162,7 @@ class ComplexType(TypeCode):
             # element declaration is initialized with a tag.
             try:
                 pyobj = self.pyclass()
-            except Exception, e:
+            except Exception as e:
                 raise TypeError("Constructing element (%s,%s) with pyclass(%s), %s" \
                     %(self.nspname, self.pname, self.pyclass.__name__, str(e)))
         else:
@@ -176,7 +179,7 @@ class ComplexType(TypeCode):
             setattr(pyobj, self.mixed_aname, self.simple_value(elt,ps, mixed=True))
 
         # Clone list of kids (we null it out as we process)
-        c, crange = c[:], range(len(c))
+        c, crange = c[:], list(range(len(c)))
         # Loop over all items we're expecting
 
         for j,c_elt in [ (j, c[j]) for j in crange if c[j] ]:

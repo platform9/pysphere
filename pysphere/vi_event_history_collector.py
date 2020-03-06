@@ -27,12 +27,13 @@
 #
 #--
 
+from builtins import object
 from pysphere import VIProperty, VIMor
 from pysphere.resources import VimService_services as VI
 from pysphere import VIException, VIApiException, FaultTypes
 from pysphere.vi_history_collector import VIHistoryCollector
 
-class Recursion:
+class Recursion(object):
     ALL      = "all"
     CHILDREN = "children"
     SELF     = "self"
@@ -98,7 +99,7 @@ class VIEventHistoryCollector(VIHistoryCollector):
             request.set_element_filter(_filter)
             resp = server._proxy.CreateCollectorForEvents(request)._returnval
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
         self._mor = resp
@@ -190,7 +191,7 @@ class VIEventHistoryCollector(VIHistoryCollector):
             for event in resp:
                 ret.append(VIProperty(self._server, event))
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
         return ret

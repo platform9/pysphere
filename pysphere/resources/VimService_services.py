@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 ##################################################
 # file: VimService_client.py
 #
@@ -6,8 +7,11 @@
 #
 ##################################################
 
-from VimService_services_types import *
-import urlparse, types
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+from .VimService_services_types import *
+import urllib.parse, types
 from pysphere.ZSI.TCcompound import ComplexType, Struct
 from pysphere.ZSI import client
 from pysphere.ZSI.schema import GED, GTD
@@ -17,7 +21,7 @@ ZSI = pysphere.ZSI
 from pysphere.ZSI.generate.pyclass import pyclass_type
 
 # Locator
-class VimServiceLocator:
+class VimServiceLocator(object):
     VimPortType_address = "https://localhost/sdk/vimService"
     def getVimPortTypeAddress(self):
         return VimServiceLocator.VimPortType_address
@@ -26,7 +30,7 @@ class VimServiceLocator:
 
 
 # Methods
-class VimBindingSOAP:
+class VimBindingSOAP(object):
     def __init__(self, url, **kw):
         kw.setdefault("readerclass", None)
         kw.setdefault("writerclass", None)

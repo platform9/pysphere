@@ -13,6 +13,9 @@ Version 0.9.0
 
 """
 
+from builtins import str
+from builtins import hex
+from builtins import range
 ident = "$Id$"
 
 from re import sub
@@ -55,7 +58,7 @@ def toXMLname(string):
         prefix = None
         localname = string
     
-    T = unicode(localname)
+    T = str(localname)
 
     N = len(localname)
     X = [];

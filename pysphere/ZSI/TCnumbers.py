@@ -3,6 +3,7 @@
 '''Typecodes for numbers.
 '''
 
+from builtins import str
 from pysphere.ZSI import _inttypes, _floattypes, _seqtypes, \
         EvaluateException
 from pysphere.ZSI.TC import TypeCode, Integer, Decimal
@@ -62,7 +63,7 @@ class Ilong(Integer):
     '''
     type = (SCHEMA.XSD3, "long")
     parselist = [(None, "long")]
-    seriallist = [ long ]
+    seriallist = [ int ]
 
 class InegativeInteger(Integer):
     '''Value less than zero.

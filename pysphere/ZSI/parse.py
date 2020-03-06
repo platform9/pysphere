@@ -3,6 +3,9 @@
 '''SOAP messaging parsing.
 '''
 
+from builtins import str
+from builtins import range
+from builtins import object
 from xml.dom import expatbuilder
 from pysphere.ZSI import _children, _attrs, _child_elements, _stringtypes, \
         _backtrace, EvaluateException, ParseException, _valid_encoding, \
@@ -17,12 +20,12 @@ _find_mu = lambda E: E.getAttributeNS(SOAP.ENV, "mustUnderstand")
 _find_root = lambda E: E.getAttributeNS(SOAP.ENC, "root")
 _find_id = lambda E: _find_attr(E, 'id')
 
-class DefaultReader:
+class DefaultReader(object):
     """ExpatReaderClass"""
     fromString = staticmethod(expatbuilder.parseString)
     fromStream = staticmethod(expatbuilder.parse)
 
-class ParsedSoap:
+class ParsedSoap(object):
     '''A Parsed SOAP object.
         Convert the text to a DOM tree and parse SOAP elements.
         Instance data:
@@ -268,9 +271,9 @@ class ParsedSoap:
         if not r:
             raise EvaluateException('No resolver for "' + uri + '"')
         try:
-            if isinstance(uri, unicode): uri = str(uri)
+            if isinstance(uri, str): uri = str(uri)
             retval = r(uri, tc, self, **keywords)
-        except Exception, e:
+        except Exception as e:
             raise EvaluateException("""Can't resolve '""" + uri + "' (" + \
                 str(e.__class__) + "): " + str(e))
         return retval
@@ -347,7 +350,7 @@ class ParsedSoap:
         '''
         d = {}
         lenofwhat = len(ofwhat)
-        c, crange = self.header_elements[:], range(len(self.header_elements))
+        c, crange = self.header_elements[:], list(range(len(self.header_elements)))
         for i,what in [ (i, ofwhat[i]) for i in range(lenofwhat) ]:
             if isinstance(what, AnyElement):
                 raise EvaluateException('not supporting <any> as child of soapenc:Header')

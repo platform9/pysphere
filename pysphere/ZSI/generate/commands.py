@@ -1,9 +1,12 @@
+from __future__ import print_function
 ############################################################################
 # Joshua Boverhof<JRBoverhof@lbl.gov>, LBNL
 # Monte Goode <MMGoode@lbl.gov>, LBNL
 # See Copyright for copyright notice!
 ############################################################################
 
+from builtins import str
+from builtins import object
 import exceptions, sys, optparse, os, warnings, traceback
 from os.path import isfile, join, split
 
@@ -113,7 +116,7 @@ def wsdl2py(args=None):
         (options, args) = op.parse_args(args)
 
     if len(args) != 1:
-        print>>sys.stderr, 'Expecting a file/url as argument (WSDL).'
+        print('Expecting a file/url as argument (WSDL).', file=sys.stderr)
         sys.exit()
 
     location = args[0]
@@ -128,8 +131,8 @@ def wsdl2py(args=None):
 
     try:
         wsdl = load(location)
-    except Exception, e:
-        print >> sys.stderr, "Error loading %s: \n\t%s" % (location, e)
+    except Exception as e:
+        print("Error loading %s: \n\t%s" % (location, e), file=sys.stderr)
         traceback.print_exc(sys.stderr)
         # exit code UNIX specific, Windows?
         if hasattr(os, 'EX_NOINPUT'): sys.exit(os.EX_NOINPUT)
@@ -249,7 +252,7 @@ def _wsdl2dispatch(options, wsdl):
     return file_name
 
 
-class _XMLSchemaAdapter:
+class _XMLSchemaAdapter(object):
     """Adapts an obj XMLSchema.XMLSchema to look like a WSDLTools.WSDL,
     just setting a couple attributes code expects to see.
     """
@@ -342,7 +345,7 @@ def _writeclientdoc(doc, thing, forceload=0):
         fd = open(name, 'w')
         fd.write(page)
         fd.close()
-    except (ImportError, pydoc.ErrorDuringImport), value:
+    except (ImportError, pydoc.ErrorDuringImport) as value:
         log.debug(str(value))
 
     pydoc.HTMLDoc.docmodule = docmodule
@@ -353,7 +356,7 @@ def _writetypesdoc(doc, thing, forceload=0):
     try:
         obj, name = pydoc.resolve(thing, forceload)
         name = os.path.join(doc, name + '.html')
-    except (ImportError, pydoc.ErrorDuringImport), value:
+    except (ImportError, pydoc.ErrorDuringImport) as value:
         log.debug(str(value))
         return
 
@@ -374,7 +377,7 @@ def _writetypesdoc(doc, thing, forceload=0):
 
                 try:
                     typecode = iklass()
-                except (AttributeError,RuntimeError), ex:
+                except (AttributeError,RuntimeError) as ex:
                     elements_dict[iname] = _writebrokedoc(doc, ex, iname)
                     continue
 
@@ -387,7 +390,7 @@ def _writetypesdoc(doc, thing, forceload=0):
             if issubclass(iklass, TypeDefinition):
                 try:
                     typecode = iklass(None)
-                except (AttributeError,RuntimeError), ex:
+                except (AttributeError,RuntimeError) as ex:
                     types_dict[iname] = _writebrokedoc(doc, ex, iname)
                     continue
 
@@ -456,7 +459,7 @@ def _writetypesdoc(doc, thing, forceload=0):
         fd = open(name, 'w')
         fd.write(page)
         fd.close()
-    except (ImportError, pydoc.ErrorDuringImport), value:
+    except (ImportError, pydoc.ErrorDuringImport) as value:
         log.debug(str(value))
 
     pydoc.HTMLDoc.docclass = doclass
@@ -470,7 +473,7 @@ def _writebrokedoc(doc, ex, name, forceload=0):
         fd = open(fname, 'w')
         fd.write(page)
         fd.close()
-    except (ImportError, pydoc.ErrorDuringImport), value:
+    except (ImportError, pydoc.ErrorDuringImport) as value:
         log.debug(str(value))
 
     return name + '.html'
@@ -491,7 +494,7 @@ def _writepydoc(doc, *args):
         name = os.path.sep.join(f.strip('.py').split(os.path.sep))
         try:
             e = __import__(name)
-        except Exception,ex:
+        except Exception as ex:
             raise
 #            _writebrokedoc(doc, ex, name)
 #            continue
@@ -506,7 +509,7 @@ def _writepydoc(doc, *args):
 
         try:
             _writedoc(doc, e)
-        except IndexError,ex:
+        except IndexError as ex:
             _writebrokedoc(doc, ex, name)
             continue
 

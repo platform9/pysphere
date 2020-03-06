@@ -7,8 +7,13 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from past.builtins import basestring
+from builtins import object
 import weakref, re, os, sys
-from ConfigParser import SafeConfigParser as ConfigParser
+from configparser import SafeConfigParser as ConfigParser
 
 from pysphere.ZSI import TC
 from pysphere.ZSI.client import _Binding
@@ -23,7 +28,7 @@ def _urn_to_module(urn): return '%s_types' %re.sub(_urn_to_module.regex, '_', ur
 _urn_to_module.regex = re.compile(r'[\W]')
 
 
-class ServiceProxy:
+class ServiceProxy(object):
     """A ServiceProxy provides a convenient way to call a remote web
        service that is described with WSDL. The proxy exposes methods
        that reflect the methods of the remote web service."""
@@ -164,7 +169,7 @@ class ServiceProxy:
                 schema = reader.reader.loadFromFile(location)
 
             # TODO: change this to keyword list
-            class options:
+            class options(object):
                 output_dir = cachedir
                 schema = True
                 simple_naming = False
@@ -307,7 +312,7 @@ class ServiceProxy:
     _nullpyclass = classmethod(_nullpyclass)
 
 
-class MethodProxy:
+class MethodProxy(object):
     """ """
     def __init__(self, parent, callinfo):
         self.__name__ = callinfo.methodName
@@ -323,15 +328,15 @@ class MethodProxy:
         """packing dicts into typecode pyclass, may fail if typecodes are
         used in the body (when asdict=True)
         """
-        class _holder: pass
+        class _holder(object): pass
         def _remap(pyobj, **d):
             pyobj.__dict__ = d
-            for k,v in pyobj.__dict__.iteritems():
+            for k,v in pyobj.__dict__.items():
                 if not isinstance(v, dict): continue
                 pyobj.__dict__[k] = p = _holder()
                 _remap(p, **v)
 
-        for k,v in headers.iteritems():
+        for k,v in headers.items():
             h = [i for i in self.callinfo.inheaders if k in i.type][0]
             if h.element_type != 1:
                 raise RuntimeError('not implemented')

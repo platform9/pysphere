@@ -27,6 +27,8 @@
 #
 #--
 
+from builtins import str
+from builtins import object
 class VIException(Exception):
     def __init__(self, msg, fault):
         self.message = str(msg)
@@ -51,7 +53,7 @@ class VIApiException(VIException):
 class UnsupportedPerfIntervalError(VIException):
     pass
 
-class FaultTypes:
+class FaultTypes(object):
     PARAMETER_ERROR    = 'Parameter Error'
     OBJECT_NOT_FOUND   = 'Object Not Found'
     NOT_CONNECTED      = 'Not Connected'

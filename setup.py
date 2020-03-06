@@ -36,8 +36,6 @@ if __name__ == "__main__":
         description="Python API for interacting with the vSphere Web Services SDK",
         author="Sebastian Tello",
         author_email="argos83@gmail.com",
-        url="http://pysphere.googlecode.com",
-        download_url="http://pysphere.googlecode.com/files/pysphere-0.1.8.zip",
         keywords = ["vSphere", "Virtual", "vmware", "ESX", "ESXi",
                     "VirtualCenter", "SDK", "API"],
         classifiers = [
@@ -62,5 +60,6 @@ if __name__ == "__main__":
             "Topic :: System :: Systems Administration",
             "Topic :: Utilities"
         ],
+        install_requires = ['future'],
         long_description=long_desc
     )

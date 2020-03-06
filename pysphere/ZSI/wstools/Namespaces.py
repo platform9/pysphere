@@ -9,14 +9,15 @@
 """Namespace module, so you don't need PyXML 
 """
 
+from builtins import object
 ident = "$Id$"
 
-class SOAP:
+class SOAP(object):
     ENV         = "http://schemas.xmlsoap.org/soap/envelope/"
     ENC         = "http://schemas.xmlsoap.org/soap/encoding/"
     ACTOR_NEXT  = "http://schemas.xmlsoap.org/soap/actor/next"
 
-class SCHEMA:
+class SCHEMA(object):
     XSD1        = "http://www.w3.org/1999/XMLSchema"
     XSD2        = "http://www.w3.org/2000/10/XMLSchema"
     XSD3        = "http://www.w3.org/2001/XMLSchema"
@@ -27,19 +28,19 @@ class SCHEMA:
     XSI_LIST    = [ XSI1, XSI2, XSI3 ]
     BASE        = XSD3
 
-class WSDL:
+class WSDL(object):
     BASE        = "http://schemas.xmlsoap.org/wsdl/"
     BIND_HTTP   = "http://schemas.xmlsoap.org/wsdl/http/"
     BIND_MIME   = "http://schemas.xmlsoap.org/wsdl/mime/"
     BIND_SOAP   = "http://schemas.xmlsoap.org/wsdl/soap/"
     BIND_SOAP12 = "http://schemas.xmlsoap.org/wsdl/soap12/"
 
-class XMLNS:
+class XMLNS(object):
     BASE        = "http://www.w3.org/2000/xmlns/"
     XML         = "http://www.w3.org/XML/1998/namespace"
     HTML        = "http://www.w3.org/TR/REC-html40"
 
-class DSIG:
+class DSIG(object):
     BASE         = "http://www.w3.org/2000/09/xmldsig#"
     C14N         = "http://www.w3.org/TR/2001/REC-xml-c14n-20010315"
     C14N_COMM    = "http://www.w3.org/TR/2000/CR-xml-c14n-20010315#WithComments"
@@ -55,7 +56,7 @@ class DSIG:
     XPATH        = "http://www.w3.org/TR/1999/REC-xpath-19991116"
     XSLT         = "http://www.w3.org/TR/1999/REC-xslt-19991116"
 
-class ENCRYPTION:
+class ENCRYPTION(object):
     BASE    = "http://www.w3.org/2001/04/xmlenc#"
     BLOCK_3DES    = "http://www.w3.org/2001/04/xmlenc#des-cbc"
     BLOCK_AES128    = "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
@@ -74,10 +75,10 @@ class ENCRYPTION:
     WRAP_AES256    = "http://www.w3.org/2001/04/xmlenc#kw-aes256"
 
 
-class WSRF_V1_2:
+class WSRF_V1_2(object):
     '''OASIS WSRF Specifications Version 1.2
     '''
-    class LIFETIME:
+    class LIFETIME(object):
         XSD_DRAFT1 = "http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceLifetime-1.2-draft-01.xsd"
         XSD_DRAFT4 = "http://docs.oasis-open.org/wsrf/2004/11/wsrf-WS-ResourceLifetime-1.2-draft-04.xsd"
 
@@ -87,7 +88,7 @@ class WSRF_V1_2:
         WSDL_LIST = (WSDL_DRAFT1, WSDL_DRAFT4)
         XSD_LIST = (XSD_DRAFT1, XSD_DRAFT4)
 
-    class PROPERTIES:
+    class PROPERTIES(object):
         XSD_DRAFT1 = "http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-ResourceProperties-1.2-draft-01.xsd"
         XSD_DRAFT5 = "http://docs.oasis-open.org/wsrf/2004/11/wsrf-WS-ResourceProperties-1.2-draft-05.xsd"
 
@@ -97,7 +98,7 @@ class WSRF_V1_2:
         WSDL_LIST = (WSDL_DRAFT1, WSDL_DRAFT5)
         XSD_LIST = (XSD_DRAFT1, XSD_DRAFT5)
 
-    class BASENOTIFICATION:
+    class BASENOTIFICATION(object):
         XSD_DRAFT1 = "http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.xsd"
 
         WSDL_DRAFT1 = "http://docs.oasis-open.org/wsn/2004/06/wsn-WS-BaseNotification-1.2-draft-01.wsdl"
@@ -105,7 +106,7 @@ class WSRF_V1_2:
         WSDL_LIST = (WSDL_DRAFT1,)
         XSD_LIST = (XSD_DRAFT1,)
 
-    class BASEFAULTS:
+    class BASEFAULTS(object):
         XSD_DRAFT1 = "http://docs.oasis-open.org/wsrf/2004/06/wsrf-WS-BaseFaults-1.2-draft-01.xsd"
         XSD_DRAFT3 = "http://docs.oasis-open.org/wsrf/2004/11/wsrf-WS-BaseFaults-1.2-draft-03.xsd"
         #LATEST = DRAFT3
@@ -116,13 +117,13 @@ WSRF = WSRF_V1_2
 WSRFLIST = (WSRF_V1_2,)
 
 
-class OASIS:
+class OASIS(object):
     '''URLs for Oasis specifications
     '''
     WSSE    = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
     UTILITY = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
     
-    class X509TOKEN:
+    class X509TOKEN(object):
         Base64Binary = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
         STRTransform = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0"
         PKCS7 = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#PKCS7"
@@ -136,48 +137,48 @@ class OASIS:
     BASEFAULTS = WSRF_V1_2.BASEFAULTS.XSD_DRAFT1
 
 
-class APACHE:
+class APACHE(object):
     '''This name space is defined by AXIS and it is used for the TC in TCapache.py,
     Map and file attachment (DataHandler)
     '''
     AXIS_NS = "http://xml.apache.org/xml-soap"
 
 
-class WSTRUST:
+class WSTRUST(object):
     BASE = "http://schemas.xmlsoap.org/ws/2004/04/trust"
     ISSUE = "http://schemas.xmlsoap.org/ws/2004/04/trust/Issue"
 
-class WSSE:
+class WSSE(object):
     BASE    = "http://schemas.xmlsoap.org/ws/2002/04/secext"
     TRUST   = WSTRUST.BASE
 
 
-class WSU:
+class WSU(object):
     BASE    = "http://schemas.xmlsoap.org/ws/2002/04/utility"
     UTILITY = "http://schemas.xmlsoap.org/ws/2002/07/utility"
 
 
-class WSR:
+class WSR(object):
     PROPERTIES = "http://www.ibm.com/xmlns/stdwip/web-services/WS-ResourceProperties"
     LIFETIME   = "http://www.ibm.com/xmlns/stdwip/web-services/WS-ResourceLifetime"
 
 
-class WSA200508:
+class WSA200508(object):
     ADDRESS    = "http://www.w3.org/2005/08/addressing"
     ANONYMOUS  = "%s/anonymous" %ADDRESS
     FAULT      = "%s/fault" %ADDRESS
 
-class WSA200408:
+class WSA200408(object):
     ADDRESS    = "http://schemas.xmlsoap.org/ws/2004/08/addressing"
     ANONYMOUS  = "%s/role/anonymous" %ADDRESS
     FAULT      = "%s/fault" %ADDRESS
 
-class WSA200403:
+class WSA200403(object):
     ADDRESS    = "http://schemas.xmlsoap.org/ws/2004/03/addressing"
     ANONYMOUS  = "%s/role/anonymous" %ADDRESS
     FAULT      = "%s/fault" %ADDRESS
 
-class WSA200303:
+class WSA200303(object):
     ADDRESS    = "http://schemas.xmlsoap.org/ws/2003/03/addressing"
     ANONYMOUS  = "%s/role/anonymous" %ADDRESS
     FAULT      = None
@@ -194,14 +195,14 @@ WSAW200605 = _WSAW("http://www.w3.org/2006/05/addressing/wsdl")
 
 WSAW_LIST = (WSAW200605,)
  
-class WSP:
+class WSP(object):
     POLICY = "http://schemas.xmlsoap.org/ws/2002/12/policy"
 
-class BEA:
+class BEA(object):
     SECCONV = "http://schemas.xmlsoap.org/ws/2004/04/sc"
     SCTOKEN = "http://schemas.xmlsoap.org/ws/2004/04/security/sc/sct"
 
-class GLOBUS:
+class GLOBUS(object):
     SECCONV = "http://wsrf.globus.org/core/2004/07/security/secconv"
     CORE    = "http://www.globus.org/namespaces/2004/06/core"
     SIG     = "http://www.globus.org/2002/04/xmlenc#gssapi-sign"

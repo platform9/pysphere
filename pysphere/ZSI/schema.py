@@ -2,9 +2,13 @@
 # $Header$
 """XML Schema support
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
+from builtins import object
 from pysphere.ZSI import _find_type, _get_element_nsuri_name, EvaluateException
 from pysphere.ZSI.wstools.Utility import SplitQName
+from future.utils import with_metaclass
 
 
 def _get_type_definition(namespaceURI, name, **kw):
@@ -48,7 +52,7 @@ def _is_substitute_element(head, sub):
 
     # TODO: better way of representing element references.  Wrap them with
     # facets, and dereference when needed and delegate to..
-    print (head.nspname == ged.nspname and head.pname == ged.pname)
+    print((head.nspname == ged.nspname and head.pname == ged.pname))
     if head is ged or not (head.nspname == ged.nspname and head.pname == ged.pname):
         return False
 
@@ -181,7 +185,7 @@ class SchemaInstanceType(type):
     getElementDeclaration = classmethod(getElementDeclaration)
 
 
-class ElementDeclaration:
+class ElementDeclaration(with_metaclass(SchemaInstanceType, object)):
     """Typecodes subclass to represent a Global Element Declaration by
     setting class variables schema and literal.
 
@@ -189,7 +193,6 @@ class ElementDeclaration:
     literal = NCName
     substitutionGroup -- GED reference of form, (namespaceURI,NCName)
     """
-    __metaclass__ = SchemaInstanceType
 
     def checkSubstitute(self, typecode):
         """If this is True, allow typecode to be substituted
@@ -241,19 +244,17 @@ class ElementDeclaration:
         return
 
 
-class LocalElementDeclaration:
+class LocalElementDeclaration(with_metaclass(SchemaInstanceType, object)):
     """Typecodes subclass to represent a Local Element Declaration.
     """
-    __metaclass__ = SchemaInstanceType
 
 
-class TypeDefinition:
+class TypeDefinition(with_metaclass(SchemaInstanceType, object)):
     """Typecodes subclass to represent a Global Type Definition by
     setting class variable type.
 
     type = (namespaceURI, NCName)
     """
-    __metaclass__ = SchemaInstanceType
 
     def getSubstituteType(self, elt, ps):
         """if xsi:type does not match the instance type attr,
@@ -289,7 +290,7 @@ class TypeDefinition:
 
 
 
-class _Mirage:
+class _Mirage(object):
     """Used with SchemaInstanceType for lazy evaluation, eval during serialize or
     parse as needed.  Mirage is callable, TypeCodes are not.  When called it returns the
     typecode.  Tightly coupled with generated code.
@@ -360,7 +361,7 @@ class _Mirage:
     __call__ = _hide_type
 
 
-class _GetPyobjWrapper:
+class _GetPyobjWrapper(object):
     """Get a python object that wraps data and typecode.  Used by
     <any> parse routine, so that typecode information discovered
     during parsing is retained in the pyobj representation
@@ -384,7 +385,7 @@ class _GetPyobjWrapper:
         to TypeCode class serialmap and Re-RegisterType.  Provides
         Any serialzation of any instances of the Wrapper.
         """
-        for k,v in cls.types_dict.iteritems():
+        for k,v in cls.types_dict.items():
             what = Any.serialmap.get(k)
             if what is None: continue
             if v in what.__class__.seriallist: continue
@@ -406,7 +407,7 @@ class _GetPyobjWrapper:
         else:
             raise TypeError(
                'Expecting a built-in type in %s (got %s).' %(
-                d.keys(),type(pyobj)))
+                list(d.keys()),type(pyobj)))
 
         newobj = pyclass(pyobj)
         newobj.typecode = what
@@ -414,4 +415,4 @@ class _GetPyobjWrapper:
     WrapImmutable = classmethod(WrapImmutable)
 
 
-from TC import Any, RegisterType
+from .TC import Any, RegisterType

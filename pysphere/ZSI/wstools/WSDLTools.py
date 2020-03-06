@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -7,16 +8,20 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 
+from future import standard_library
+standard_library.install_aliases()
+from past.builtins import basestring
+from builtins import object
 ident = "$Id$"
 
 import weakref
-from cStringIO import StringIO
+from io import StringIO
 from pysphere.ZSI.wstools.Namespaces import XMLNS, WSA, WSA_LIST, WSAW_LIST, WSRF_V1_2, WSRF
 from pysphere.ZSI.wstools.Utility import Collection, CollectionNS, DOM, ElementProxy, basejoin
 from pysphere.ZSI.wstools.XMLSchema import SchemaReader, WSDLToolsAdapter
 
 
-class WSDLReader:
+class WSDLReader(object):
     """A WSDLReader creates WSDL instances from urls and xml data."""
 
     # Custom subclasses of WSDLReader may wish to implement a caching
@@ -55,7 +60,7 @@ class WSDLReader:
             f.close()
         return wsdl
 
-class WSDL:
+class WSDL(object):
     """A WSDL object models a WSDL service description. WSDL objects
        may be created manually or loaded from an xml representation
        using a WSDLReader instance."""
@@ -352,7 +357,7 @@ class WSDL:
                 parent.appendChild(child)
                 child.setAttribute('targetNamespace', namespace)
                 attrsNS = imported._attrsNS
-                for attrkey in attrsNS.iterkeys():
+                for attrkey in attrsNS.keys():
                     if attrkey[0] == DOM.NS_XMLNS:
                         attr = attrsNS[attrkey].cloneNode(1)
                         child.setAttributeNode(attr)
@@ -369,7 +374,7 @@ class WSDL:
             importdoc.unlink()
         return location
 
-class Element:
+class Element(object):
     """A class that provides common functions for WSDL element classes."""
     def __init__(self, name=None, documentation=''):
         self.name = name
@@ -1108,7 +1113,7 @@ class Port(Element):
             ext.toDom(node)
 
 
-class SoapBinding:
+class SoapBinding(object):
     def __init__(self, transport, style='rpc'):
         self.transport = transport
         self.style = style
@@ -1125,7 +1130,7 @@ class SoapBinding:
         if self.style:
             epc.setAttributeNS(None, "style", self.style)
 
-class SoapAddressBinding:
+class SoapAddressBinding(object):
     def __init__(self, location):
         self.location = location
 
@@ -1139,7 +1144,7 @@ class SoapAddressBinding:
         epc.setAttributeNS(None, "location", self.location)
 
 
-class SoapOperationBinding:
+class SoapOperationBinding(object):
     def __init__(self, soapAction=None, style=None):
         self.soapAction = soapAction
         self.style = style
@@ -1157,7 +1162,7 @@ class SoapOperationBinding:
             epc.setAttributeNS(None, 'style', self.style)
 
 
-class SoapBodyBinding:
+class SoapBodyBinding(object):
     def __init__(self, use, namespace=None, encodingStyle=None, parts=None):
         if not use in ('literal', 'encoded'):
             raise WSDLError(
@@ -1165,7 +1170,7 @@ class SoapBodyBinding:
                 )
         self.encodingStyle = encodingStyle
         self.namespace = namespace
-        if isinstance(parts,( str, unicode)):
+        if isinstance(parts,( str, str)):
             parts = parts.split()
         self.parts = parts
         self.use = use
@@ -1181,7 +1186,7 @@ class SoapBodyBinding:
         epc.setAttributeNS(None, "namespace", self.namespace)
 
 
-class SoapFaultBinding:
+class SoapFaultBinding(object):
     def __init__(self, name, use, namespace=None, encodingStyle=None):
         if not use in ('literal', 'encoded'):
             raise WSDLError(
@@ -1207,7 +1212,7 @@ class SoapFaultBinding:
             epc.setAttributeNS(None, "encodingStyle", self.encodingStyle)
 
 
-class SoapHeaderBinding:
+class SoapHeaderBinding(object):
     def __init__(self, message, part, use, namespace=None, encodingStyle=None):
         if not use in ('literal', 'encoded'):
             raise WSDLError(
@@ -1225,39 +1230,39 @@ class SoapHeaderFaultBinding(SoapHeaderBinding):
     tagname = 'headerfault'
 
 
-class HttpBinding:
+class HttpBinding(object):
     def __init__(self, verb):
         self.verb = verb
 
-class HttpAddressBinding:
+class HttpAddressBinding(object):
     def __init__(self, location):
         self.location = location
 
 
-class HttpOperationBinding:
+class HttpOperationBinding(object):
     def __init__(self, location):
         self.location = location
 
-class HttpUrlReplacementBinding:
+class HttpUrlReplacementBinding(object):
     pass
 
 
-class HttpUrlEncodedBinding:
+class HttpUrlEncodedBinding(object):
     pass
 
 
-class MimeContentBinding:
+class MimeContentBinding(object):
     def __init__(self, part=None, _type=None):
         self.part = part
         self.type = _type
 
 
-class MimeXmlBinding:
+class MimeXmlBinding(object):
     def __init__(self, part=None):
         self.part = part
 
 
-class MimeMultipartRelatedBinding:
+class MimeMultipartRelatedBinding(object):
     def __init__(self):
         self.parts = []
 
@@ -1269,7 +1274,7 @@ class MimeMultipartRelatedBinding:
                 continue
 
 
-class MimePartBinding:
+class MimePartBinding(object):
     def __init__(self):
         self.items = []
 
@@ -1402,7 +1407,7 @@ def FindExtension(obj, kind, t_type=type(())):
     return None
 
 
-class SOAPCallInfo:
+class SOAPCallInfo(object):
     """SOAPCallInfo captures the important binding information about a 
        SOAP operation, in a structure that is easier to work with than
        raw WSDL structures."""
@@ -1481,7 +1486,7 @@ class SOAPCallInfo:
         return self.outheaders
 
 
-class ParameterInfo:
+class ParameterInfo(object):
     """A ParameterInfo object captures parameter binding information."""
     def __init__(self, name, _type, namespace=None, element_type=0):
         if element_type:
@@ -1561,7 +1566,7 @@ def callInfoFromWSDL(port, name):
                 for name in body.parts:
                     parts.append(message.parts[name])
             else:
-                parts = message.parts.itervalues()
+                parts = iter(message.parts.values())
 
             for part in parts:
                 callinfo.addInParameter(
@@ -1575,10 +1580,10 @@ def callInfoFromWSDL(port, name):
             message = messages[operation.output.message]
         except KeyError:
             message = wsdl.addMessage(operation.output.message)
-            print "Warning:", \
+            print("Warning:", \
                   "Recieved message not defined in the WSDL schema.", \
-                  "Adding it."
-            print "Message:", operation.output.message
+                  "Adding it.")
+            print("Message:", operation.output.message)
          
         msgrole = opbinding.output
 
@@ -1608,7 +1613,7 @@ def callInfoFromWSDL(port, name):
                 for name in body.parts:
                     parts.append(message.parts[name])
             else:
-                parts = message.parts.itervalues()
+                parts = iter(message.parts.values())
 
             for part in parts:
                 callinfo.addOutParameter(

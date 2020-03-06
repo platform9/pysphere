@@ -2,6 +2,7 @@
 # $Header$
 '''Utilities for HTTP Digest Authentication
 '''
+from builtins import str
 import re
 from md5 import md5
 import random
@@ -96,6 +97,6 @@ def build_authorization_arg(authdict):
     Create an "Authorization" header value from an authdict (created by generate_response()).
     """
     vallist = []
-    for k in authdict.iterkeys():
+    for k in authdict.keys():
         vallist += ['%s=%s' % (k,authdict[k])]
     return 'Digest '+', '.join(vallist)

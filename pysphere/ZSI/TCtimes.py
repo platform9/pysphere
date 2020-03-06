@@ -3,6 +3,8 @@
 '''Typecodes for dates and times.
 '''
 
+from builtins import str
+from builtins import range
 from pysphere.ZSI import _floattypes, _inttypes, EvaluateException
 from pysphere.ZSI.TC import SimpleType
 from pysphere.ZSI.wstools.Namespaces import SCHEMA
@@ -163,7 +165,7 @@ class Duration(SimpleType):
             raise EvaluateException('Duration has T without time')
         try:
             retval = _dict_to_tuple(d)
-        except ValueError, e:
+        except ValueError as e:
             raise EvaluateException(str(e))
 
         if self.pyclass is not None:

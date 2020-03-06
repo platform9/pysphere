@@ -3,13 +3,15 @@
 '''Apache typecodes.
 '''
 
+from builtins import str
+from builtins import object
 from pysphere.ZSI import _child_elements, _get_idstr
 from pysphere.ZSI.TC import SimpleType, TypeCode, Struct as _Struct, Any as _Any
 from pysphere.ZSI.wstools.logging import getLogger as _GetLogger
 from pysphere.ZSI.wstools.Namespaces import APACHE
 #import types
 
-class Apache:
+class Apache(object):
     NS = APACHE.AXIS_NS
 
 class _Map(TypeCode):
@@ -69,7 +71,7 @@ class _Map(TypeCode):
             for k,v in pyobj:
                 self.tc.serialize(el, sw, {'key': k, 'value': v}, name='item')
         else:
-            for k,v in pyobj.iteritems():
+            for k,v in pyobj.items():
                 self.tc.serialize(el, sw, {'key': k, 'value': v}, name='item')
 
 class AttachmentRef(SimpleType):

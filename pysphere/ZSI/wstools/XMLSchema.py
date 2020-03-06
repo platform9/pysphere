@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright (c) 2003, The Regents of the University of California,
 # through Lawrence Berkeley National Laboratory (subject to receipt of
 # any required approvals from the U.S. Dept. of Energy).  All rights
@@ -12,12 +13,18 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from builtins import object
 ident = "$Id$"
 
 import types, weakref, sys, warnings
 from pysphere.ZSI.wstools.Namespaces import SCHEMA, XMLNS, SOAP, APACHE
 from pysphere.ZSI.wstools.Utility import DOM, DOMException, Collection, SplitQName, basejoin
-from StringIO import StringIO
+from io import StringIO
 
 # If we have no threading, this should be a no-op
 from threading import RLock
@@ -40,7 +47,7 @@ def GetSchema(component):
         parent = parent._parent()
     return parent
     
-class SchemaReader:
+class SchemaReader(object):
     """A SchemaReader creates XMLSchema objects from urls and xml data.
     """
     
@@ -61,7 +68,7 @@ class SchemaReader:
         """Add dictionary of imports to schema instance.
            schema -- XMLSchema instance
         """
-        for ns in schema.imports.iterkeys(): 
+        for ns in schema.imports.keys(): 
             if ns in self._imports:
                 schema.addImportSchema(self._imports[ns])
 
@@ -69,7 +76,7 @@ class SchemaReader:
         """Add dictionary of includes to schema instance.
            schema -- XMLSchema instance
         """
-        for schemaLocation in schema.includes.iterkeys(): 
+        for schemaLocation in schema.includes.keys(): 
             if schemaLocation in self._includes:
                 schema.addIncludeSchema(schemaLocation, self._imports[schemaLocation])
 
@@ -158,7 +165,7 @@ class NoSchemaLocationWarning(Exception):
 ###########################
 # DOM Utility Adapters 
 ##########################
-class DOMAdapterInterface:
+class DOMAdapterInterface(object):
     def hasattr(self, attr, ns=None):
         """return true if node has attribute 
            attr -- attribute to check for
@@ -248,7 +255,7 @@ class DOMAdapter(DOMAdapterInterface):
 
     def setAttributeDictionary(self):
         self.__attributes = {}
-        for v in self.__node._attrs.itervalues():
+        for v in self.__node._attrs.values():
             self.__attributes[v.nodeName] = v.nodeValue
 
     def getAttributeDictionary(self):
@@ -292,7 +299,7 @@ class DOMAdapter(DOMAdapterInterface):
             self.__node = self.__node.documentElement
 
  
-class XMLBase: 
+class XMLBase(object): 
     """ These class variables are for string indentation.
     """ 
     tag = None
@@ -303,7 +310,7 @@ class XMLBase:
         XMLBase.__rlock.acquire()
         XMLBase.__indent += 1
         tmp = "<" + str(self.__class__) + '>\n'
-        for k,v in self.__dict__.iteritems():
+        for k,v in self.__dict__.items():
             tmp += "%s* %s = %s\n" %(XMLBase.__indent*'  ', k, v)
         XMLBase.__indent -= 1 
         XMLBase.__rlock.release()
@@ -314,42 +321,42 @@ class XMLBase:
         the provided convenience functions.
 
 """
-class DefinitionMarker: 
+class DefinitionMarker(object): 
     """marker for definitions
     """
     pass
 
-class DeclarationMarker: 
+class DeclarationMarker(object): 
     """marker for declarations
     """
     pass
 
-class AttributeMarker: 
+class AttributeMarker(object): 
     """marker for attributes
     """
     pass
 
-class AttributeGroupMarker: 
+class AttributeGroupMarker(object): 
     """marker for attribute groups
     """
     pass
 
-class WildCardMarker: 
+class WildCardMarker(object): 
     """marker for wildcards
     """
     pass
 
-class ElementMarker: 
+class ElementMarker(object): 
     """marker for wildcards
     """
     pass
 
-class ReferenceMarker: 
+class ReferenceMarker(object): 
     """marker for references
     """
     pass
 
-class ModelGroupMarker: 
+class ModelGroupMarker(object): 
     """marker for model groups
     """
     pass
@@ -369,46 +376,46 @@ class SequenceMarker(ModelGroupMarker):
     """
     pass
 
-class ExtensionMarker: 
+class ExtensionMarker(object): 
     """marker for extensions
     """
     pass
 
-class RestrictionMarker: 
+class RestrictionMarker(object): 
     """marker for restrictions
     """
     facets = ['enumeration', 'length', 'maxExclusive', 'maxInclusive',\
         'maxLength', 'minExclusive', 'minInclusive', 'minLength',\
         'pattern', 'fractionDigits', 'totalDigits', 'whiteSpace']
 
-class SimpleMarker: 
+class SimpleMarker(object): 
     """marker for simple type information
     """
     pass
 
-class ListMarker: 
+class ListMarker(object): 
     """marker for simple type list
     """
     pass
 
-class UnionMarker: 
+class UnionMarker(object): 
     """marker for simple type Union
     """
     pass
 
 
-class ComplexMarker: 
+class ComplexMarker(object): 
     """marker for complex type information
     """
     pass
 
-class LocalMarker: 
+class LocalMarker(object): 
     """marker for complex type information
     """
     pass
 
 
-class MarkerInterface:
+class MarkerInterface(object):
     def isDefinition(self):
         return isinstance(self, DefinitionMarker)
 
@@ -703,7 +710,7 @@ class XMLSchemaComponent(XMLBase, MarkerInterface):
                    with QName.
         """
         self.attributes = {XMLSchemaComponent.xmlns:{}}
-        for k,v in node.getAttributeDictionary().iteritems():
+        for k,v in node.getAttributeDictionary().items():
             prefix,value = SplitQName(k)
             if value == XMLSchemaComponent.xmlns:
                 self.attributes[value][prefix or XMLSchemaComponent.xmlns_key] = v
@@ -773,7 +780,7 @@ class XMLSchemaComponent(XMLBase, MarkerInterface):
                 raise SchemaError(
                     'class instance %s, missing required attribute %s'
                     %(self.__class__, a))
-        for a,v in self.attributes.iteritems():
+        for a,v in self.attributes.items():
             # attribute #other, ie. not in empty namespace
             if isinstance(v, dict):
                 continue
@@ -782,7 +789,7 @@ class XMLSchemaComponent(XMLBase, MarkerInterface):
             if a in (XMLSchemaComponent.xmlns, XMLNS.XML):
                 continue
             
-            if (a not in self.__class__.attributes.keys() and not 
+            if (a not in list(self.__class__.attributes.keys()) and not 
                 (self.isAttribute() and self.isReference())):
                 raise SchemaError('%s, unknown attribute(%s,%s)' 
                     %(self.getItemTrace(), a, self.attributes[a]))
@@ -947,7 +954,7 @@ class Annotation(XMLSchemaComponent):
             self.content = tuple(content)
 
 
-class XMLSchemaFake:
+class XMLSchemaFake(object):
     # This is temporary, for the benefit of WSDL until the real thing works.
     def __init__(self, element):
         self.targetNamespace = DOM.getAttr(element, 'targetNamespace')
@@ -1153,7 +1160,7 @@ class XMLSchema(XMLSchemaComponent):
                 self.setAttributes(pnode)
                 attributes.update(self.attributes)
                 self.setAttributes(node)
-                for k,v in attributes['xmlns'].iteritems():
+                for k,v in attributes['xmlns'].items():
                     if k not in self.attributes['xmlns']:
                         self.attributes['xmlns'][k] = v
             else:
@@ -1185,7 +1192,7 @@ class XMLSchema(XMLSchemaComponent):
                 for collection in ['imports','elements','types',
                                    'attr_decl','attr_groups','model_groups',
                                    'notations']:
-                    for k,v in getattr(schema,collection).iteritems():
+                    for k,v in getattr(schema,collection).items():
                         if k not in getattr(self,collection):
                             v._parent = weakref.ref(self)
                             getattr(self,collection)[k] = v
@@ -1204,19 +1211,19 @@ class XMLSchema(XMLSchemaComponent):
                     slocd[import_ns] = schema
                     try:
                         tp.loadSchema(schema)
-                    except NoSchemaLocationWarning, ex:
+                    except NoSchemaLocationWarning as ex:
                         # Dependency declaration, hopefully implementation
                         # is aware of this namespace (eg. SOAP,WSDL,?)
-                        print "IMPORT: ", import_ns
-                        print ex
+                        print("IMPORT: ", import_ns)
+                        print(ex)
                         del slocd[import_ns]
                         continue
-                    except SchemaError, ex:
+                    except SchemaError as ex:
                         #warnings.warn(\
                         #    '<import namespace="%s" schemaLocation=?>, %s'\
                         #    %(import_ns, 'failed to load schema instance')
                         #)
-                        print ex
+                        print(ex)
                         del slocd[import_ns]
                         class _LazyEvalImport(str):
                             '''Lazy evaluation of import, replace entry in self.imports.'''
@@ -1911,7 +1918,7 @@ class ElementDeclaration(XMLSchemaComponent,\
         parent = self
         while 1:
             nsdict = parent.attributes[XMLSchemaComponent.xmlns]
-            for v in nsdict.itervalues():
+            for v in nsdict.values():
                 if v not in SCHEMA.XSD_LIST: continue
                 return TypeDescriptionComponent((v, 'anyType'))
             
@@ -3065,7 +3072,7 @@ class AnonymousSimpleType(SimpleType,\
     tag = 'simpleType'
 
 
-class Redefine:
+class Redefine(object):
     """<redefine>
        parents:
        attributes:

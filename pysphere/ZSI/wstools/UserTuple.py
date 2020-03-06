@@ -51,7 +51,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #   __reduce__, __setattr__, __str__
 # What about these?
 
-class UserTuple:
+from past.builtins import cmp
+from builtins import object
+class UserTuple(object):
     def __init__(self, inittuple=None):
         self.data = ()
         if inittuple is not None:

@@ -27,13 +27,16 @@
 #
 #--
 
+from builtins import str
+from past.builtins import basestring
+from builtins import object
 from pysphere.resources import VimService_services as VI
 from pysphere.vi_property import VIProperty
 from pysphere.resources.vi_exception import VIException, VIApiException, \
                     UnsupportedPerfIntervalError, FaultTypes
 import datetime
 
-class EntityStatistics:
+class EntityStatistics(object):
     def __init__(self, mor, counter_key, counter_name, counter_desc, group_name,
                  group_desc, unit_name, unit_desc, instance_name, value,
                  time_stamp):
@@ -61,14 +64,14 @@ class EntityStatistics:
         return"<%(mor)s:%(counter)s(%(counter_key)s):%(description)s" \
               ":%(instance)s:%(value)s:%(unit)s:%(time)s>" % self.__dict__
 
-class Intervals:
+class Intervals(object):
     CURRENT = None
     PAST_DAY = 1
     PAST_WEEK = 2
     PAST_MONTH = 3
     PAST_YEAR = 4
 
-class PerformanceManager:
+class PerformanceManager(object):
     INTERVALS = Intervals
     
     def __init__(self, server, mor):
@@ -274,7 +277,7 @@ class PerformanceManager:
                                                              request)._returnval
             return do_perf_metric_id
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def query_perf_provider_summary(self, entity):
@@ -303,7 +306,7 @@ class PerformanceManager:
                                                              request)._returnval
             return qpps
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def query_perf_counter(self, counter_id):
@@ -330,7 +333,7 @@ class PerformanceManager:
             qpc = self._server._proxy.QueryPerfCounter(request)._returnval
             return qpc
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
 
     def query_perf(self, entity, format='normal', interval_id=None, 
@@ -419,5 +422,5 @@ class PerformanceManager:
 
             return query_perf
 
-        except (VI.ZSI.FaultException), e:
+        except (VI.ZSI.FaultException) as e:
             raise VIApiException(e)
