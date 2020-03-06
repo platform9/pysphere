@@ -20,7 +20,7 @@ ident = "$Id$"
 
 import sys, http.client, urllib.request, urllib.parse, urllib.error, socket, weakref
 from os.path import isfile
-from UserDict import UserDict
+from collections import UserDict
 from io import StringIO
 from pysphere.ZSI.wstools.TimeoutSocket import TimeoutSocket
 from urllib.parse import urlparse
