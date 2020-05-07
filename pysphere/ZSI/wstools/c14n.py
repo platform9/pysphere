@@ -71,9 +71,9 @@ def _sorter(n1,n2):
     '''_sorter(n1,n2) -> int
     Sorting predicate for non-NS attributes.'''
 
-    i = (n1.namespaceURI > n2.namespaceURI) - (n1.namespaceURI < n2.namespaceURI)
+    i = (str(n1.namespaceURI) > str(n2.namespaceURI)) - (str(n1.namespaceURI) < str(n2.namespaceURI))
     if i: return i
-    return (n1.localName > n2.localName) - (n1.localName < n2.localName)
+    return (str(n1.localName) > str(n2.localName)) - (str(n1.localName) < str(n2.localName))
 
 
 def _sorter_ns(n1,n2):
@@ -82,7 +82,7 @@ def _sorter_ns(n1,n2):
 
     if n1[0] == 'xmlns': return -1
     if n2[0] == 'xmlns': return 1
-    return (n1[0] > n2[0]) - (n1[0] < n2[0])
+    return (str(n1[0]) > str(n2[0])) - (str(n1[0]) < str(n2[0]))
 
 def _utilized(n, node, other_attrs, unsuppressedPrefixes):
     '''_utilized(n, node, other_attrs, unsuppressedPrefixes) -> boolean
